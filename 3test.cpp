@@ -1,26 +1,45 @@
 #include<vector>
 #include<iostream>
 #include<curses.h>
-#include <cstring>
-#include <string>
-//If the string is longer than the allocated amount for the data then 
-//cut the string and move it to the next node
-//To have the greatest amount of control possible make a class that
-//contains the single char and the location of that char. That way
-//it can be easily the char in that location can easily be replaced or deleted.
-//Replacing/deleting chords will be hard (Maybe not since they will all be under the same 
-//index
+#include<cstring>
+#include<string>
+#include<fstream>
 
 
+//Linked list structure allows for fully dynamic capability
+//You can insert between individual tabs as well as tab lines, and also
+//easily edit tabs and tablines
 
-/* BATTLE PLAN
-   Each Line will be a Linked List of single chars. There will only be 6 Linked Lists
-   so new lines will be an illusion. The LLs are needed to be able to access the very first
-   Node in the list and traverse. 
+/* Goal Queue
+RIGHT NOW: the output is appended to the file, but the output is the full tab everytime so you need to clear the file everytime(??) 
+this will be a tricky problem when you are working with saving. I think the idea of reading in the file is that it will create the whole Linked List
+structure out of what is read in. THE OVERALL GOAL IS FOR THE FILE TO MATCH EXACTLY WHAT IS ON THE SCREEN OF THE LAST SESSION.
+
+Implement Double Digit Tabs 
+
+Implement Chords
+
+Implement Title Screen
+
+Implement File output
+
+Implement editing system for lines
+
+Implement editing system for tablines
+
+Implement Tab cut off after 150 chars
+
+Fix bugs that occur when you enter non digits
+
+Take care of Memory Leaks
+
+Implement File input
+
+Implement error checking for incorrect strings
+
 */
 
 
-                                                                                                                                                     
 //Each line will be 150 spaces long bookended with |
 
 
@@ -31,6 +50,7 @@ class List{
     List();
     ~List();
     void insert(char c);
+    void insertEnd();
     void print();
   private:
     class Node{
@@ -66,6 +86,23 @@ void List::insert(char c)
 //  printw( "XXX: %c\n", ptr->m_c );
 }
 
+void List::insertEnd()
+{                       
+  Node *ptr =m_head;
+  if(m_head==NULL){
+    m_head = new Node('|', NULL);
+    //printw("%s\n", &(m_head->m_c));
+  }
+  else{
+    while(ptr->m_next != NULL){
+      ptr = ptr->m_next;
+    }
+    ptr->m_next = new Node('|', NULL);
+    //printw("%s\n", &(ptr->m_next->m_c));
+  }
+//  printw( "XXX: %c\n", ptr->m_c );
+}
+
 //Could cause issues
 List::~List() 
 {
@@ -81,13 +118,19 @@ List::~List()
 
 void List::print()
 {
+  std::ofstream myfile;
+  myfile.open ("output.txt", std::ios_base::app);
   Node *ptr = m_head;
   while(ptr!=NULL)
   {
     printw( "%s", &(ptr->m_c) );
+    std::string str(&(ptr->m_c));
+    myfile << str;
     ptr =ptr->m_next;
   }
   printw( "\n");
+  myfile << "\n";
+  myfile.close();
   //delete ptr;
 }
 
@@ -95,10 +138,12 @@ void List::print()
 
 class listLine{
   public:
-    listLine(){};
+    listLine(){full = false;}
     void insert(char string[100]);
     void print();
+    bool isFull();
   private:
+    bool full;
     List EString;
     List bString;
     List gString;
@@ -106,6 +151,10 @@ class listLine{
     List aString;
     List eString;
 };
+
+bool listLine::isFull(){
+  return full;
+}
 
 void listLine::insert(char string[100]){
   char which;
@@ -160,6 +209,15 @@ void listLine::insert(char string[100]){
       gString.insert('-');
       bString.insert('-');
     }
+    if(string[i] == 'X'){
+      EString.insertEnd();
+      eString.insertEnd();
+      aString.insertEnd();
+      dString.insertEnd();
+      gString.insertEnd();
+      bString.insertEnd();
+      full = true;
+    }
   }
 }
 
@@ -194,16 +252,33 @@ void megaList::insert(char string[100]){
   ll->insert(string);
   if(m_head == NULL)
     m_head = new listLineNode(ll, NULL);
-  else
-    m_head->m_lLine->insert(string);
+  else{
+    //Find the first ptr where isFull = false;
+    //If you reach null then create a new listLine node at the end
+    listLineNode *ptr = m_head;
+    while(ptr->m_next != NULL && ptr->m_lLine->isFull() == true){
+      ptr = ptr->m_next;
+    }
+    if(ptr->m_lLine->isFull() == false){
+      ptr->m_lLine->insert(string);
+    }
+    else{
+      ptr->m_next  = new listLineNode(ll, NULL);
+    }
+  }
 }
 
 void megaList::print(){
+  std::ofstream myfile;
+  myfile.open ("output.txt", std::ios_base::app);
   listLineNode* ptr = m_head;
   while(ptr!=NULL){
     ptr->m_lLine->print();
+    printw("\n");
+    myfile << "\n";
     ptr = ptr->m_next;
   }
+  myfile.close();
 }
 
 int main()
@@ -211,30 +286,21 @@ int main()
   initscr();
   (void)echo();
   char test[100];
-//  List listE;
-//  List liste;
   megaList meg;
   for(int i=0;i<100;i++){
     test[i] = '$';
   }
 
-  addstr( "> " );
+  addstr( "lightningTab> " );
   getnstr(test, sizeof( test ) -1);
   while(true){
   clear();
   refresh();
   meg.insert(test);
   meg.print();
-  /*
-  liste.insert(test[0]);
-  liste.print();
-  listE.insert(test[1]);
-  listE.print();
-  */
-  //printw( "%s\n", test);
   
   refresh();
-  addstr( "test> " );
+  addstr( "lightningTab> " );
   for(int i=0;i<100;i++){
     test[i] = '$';
   }
