@@ -4,10 +4,13 @@
 #include<cstring>
 #include<string>
 #include<fstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 
 //Linked list structure allows for fully dynamic capability
-//You can insert between individual tabs as well as tab lines, and also
+//You can insert & delete between individual tabs as well as tablines, and also
 //easily edit tabs and tablines
 
 /* Goal Queue
@@ -17,9 +20,13 @@ structure out of what is read in. THE OVERALL GOAL IS FOR THE FILE TO MATCH EXAC
 
 Implement Double Digit Tabs 
 
-Implement Chords
+WORKING ON:Implement Chords
 
-Implement Title Screen
+Implement DLL for printing last 7 (or fewer) tablines (fixes spacing issues);
+
+Implement Enter/Backspace for adding empty spaces and deleting columns respectively.
+
+Implement Arrow keys to move the view of the 7 tablines (assuming there are more than 7)
 
 Implement File output
 
@@ -29,6 +36,8 @@ Implement editing system for tablines
 
 Implement Tab cut off after 150 chars
 
+Implement repeat feature
+
 Fix bugs that occur when you enter non digits
 
 Take care of Memory Leaks
@@ -37,12 +46,26 @@ Implement File input
 
 Implement error checking for incorrect strings
 
+Implement common chord patterns as a single command(G, C, E, etc..)
+
+Implement a feature that allows users to define their own custom chords. 
+
+Implement a robust title screen
 */
 
 
 //Each line will be 150 spaces long bookended with |
 
-
+void printtitle(){
+//  printw("%s", "WELCOME TO ");
+  printw("%s", " _     _____ _____  _   _ _____ _   _ _____ _   _ _____   _____ ___  ______ \n");
+  printw("%s", "| |   |_   _|  __ \\| | | |_   _| \\ | |_   _| \\ | |  __ \\ |_   _/ _ \\ | ___ \\ \n");
+  printw("%s", "| |     | | | |  \\/| |_| | | | |  \\| | | | |  \\| | |  \\/   | |/ /_\\ \\| |_/ / \n"); 
+  printw("%s", "| |     | | | | __ |  _  | | | | . ` | | | | . ` | | __    | ||  _  || ___ \\ \n"); 
+  printw("%s", "| |_____| |_| |_\\ \\| | | | | | | |\\  |_| |_| |\\  | |_\\ \\   | || | | || |_/ / \n");
+  printw("%s", "\\_____/\\___/ \\____/\\_| |_/ \\_/ \\_| \\_/\\___/\\_| \\_/\\____/   \\_/\\_| |_/\\____/  \n\n");
+  printw("%s", "PRESS ENTER TO CONTINUE\n");
+}
 
 
 class List{
@@ -140,6 +163,7 @@ class listLine{
   public:
     listLine(){full = false;}
     void insert(char string[100]);
+    void insertChord(char chord[22]);
     void print();
     bool isFull();
   private:
@@ -158,10 +182,20 @@ bool listLine::isFull(){
 
 void listLine::insert(char string[100]){
   char which;
+  /*
+  if(string[0] == '$'){
+      eString.insert('-');
+      aString.insert('-');
+      dString.insert('-');
+      gString.insert('-');
+      bString.insert('-');
+      EString.insert('-');
+  }
+  */
   for(int i=0;i<100;i++){
     if(string[i] == '$')
       break;
-    if(string[i] == 'e'){
+    if(string[i] == 'e' && isdigit(string[i+1])){
       eString.insert(string[i+1]);
       aString.insert('-');
       dString.insert('-');
@@ -169,7 +203,7 @@ void listLine::insert(char string[100]){
       bString.insert('-');
       EString.insert('-');
     }
-    if(string[i] == 'a'){
+    if(string[i] == 'a' && isdigit(string[i+1])){
       aString.insert(string[i+1]);
       eString.insert('-');
       dString.insert('-');
@@ -177,7 +211,7 @@ void listLine::insert(char string[100]){
       bString.insert('-');
       EString.insert('-');
     }
-    if(string[i] == 'd'){
+    if(string[i] == 'd' && isdigit(string[i+1])){
       dString.insert(string[i+1]);
       eString.insert('-');
       aString.insert('-');
@@ -185,7 +219,7 @@ void listLine::insert(char string[100]){
       bString.insert('-');
       EString.insert('-');
     }
-    if(string[i] == 'g'){
+    if(string[i] == 'g' && isdigit(string[i+1])){
       gString.insert(string[i+1]);
       eString.insert('-');
       aString.insert('-');
@@ -193,7 +227,7 @@ void listLine::insert(char string[100]){
       bString.insert('-');
       EString.insert('-');
     }
-    if(string[i] == 'b'){
+    if(string[i] == 'b' && isdigit(string[i+1])){
       bString.insert(string[i+1]);
       eString.insert('-');
       aString.insert('-');
@@ -201,7 +235,7 @@ void listLine::insert(char string[100]){
       gString.insert('-');
       EString.insert('-');
     }
-    if(string[i] == 'E'){
+    if(string[i] == 'E' && isdigit(string[i+1])){
       EString.insert(string[i+1]);
       eString.insert('-');
       aString.insert('-');
@@ -218,7 +252,72 @@ void listLine::insert(char string[100]){
       bString.insertEnd();
       full = true;
     }
+    if(string[i] == 'c' && string[i+1] == 'h'){
+//      int n = 2;
+      int p = 0;
+      char chord[22];
+      for(int c = 0; c < 20; c++){
+	chord[c] = '$';
+      }
+      while(string[i] != '|' && string[i] != '$'){
+        chord[p] = string[i];	
+	p = p + 1;
+	i = i + 1;
+      }
+      insertChord(chord);
+//      break;
+    }
   }
+}
+
+void listLine::insertChord(char chord[22]){
+  int e = 0;
+  int a = 0;
+  int d = 0;
+  int g = 0;
+  int b = 0;
+  int E = 0;
+  //printw("%s: ", chord);
+  for(int i=0;i<22;i++){
+    if(chord[i] == '$')
+      break;
+    if(chord[i] == 'e' && isdigit(chord[i+1]) && e == 0){
+      eString.insert(chord[i+1]);
+      e = 1;
+    }
+    if(chord[i] == 'a' && isdigit(chord[i+1]) && a == 0){
+      aString.insert(chord[i+1]);
+      a = 1;
+    }
+    if(chord[i] == 'd' && isdigit(chord[i+1]) && d == 0){
+      dString.insert(chord[i+1]);
+      d = 1;
+    }
+    if(chord[i] == 'g' && isdigit(chord[i+1]) && g == 0){
+      gString.insert(chord[i+1]);
+      g = 1;
+    }
+    if(chord[i] == 'b' && isdigit(chord[i+1]) && b == 0){
+      bString.insert(chord[i+1]);
+      b = 1;
+    }
+    if(chord[i] == 'E' && isdigit(chord[i+1]) && E == 0){
+      EString.insert(chord[i+1]);
+      E = 1;
+    }
+  }
+  if(e == 0)
+    eString.insert('-');
+  if(a == 0)
+    aString.insert('-');
+  if(d == 0)
+    dString.insert('-');
+  if(g == 0)
+    gString.insert('-');
+  if(b == 0)
+    bString.insert('-');
+  if(E == 0)
+    EString.insert('-');
 }
 
 void listLine::print(){
@@ -247,14 +346,18 @@ class megaList{
     listLineNode *m_head;
 };
 
+/**
+ * Determines which list line node to insert into
+ * Note: It is likely a call to insert is made twice, but
+ * It's inserted into different list nodes, so this is not a problem. 
+ */
+
 void megaList::insert(char string[100]){
   listLine *ll = new listLine();
   ll->insert(string);
   if(m_head == NULL)
     m_head = new listLineNode(ll, NULL);
   else{
-    //Find the first ptr where isFull = false;
-    //If you reach null then create a new listLine node at the end
     listLineNode *ptr = m_head;
     while(ptr->m_next != NULL && ptr->m_lLine->isFull() == true){
       ptr = ptr->m_next;
@@ -269,6 +372,8 @@ void megaList::insert(char string[100]){
 }
 
 void megaList::print(){
+  //Need to edit this to only print the last 7 tblines, maybe doubly linked list?
+  //If you use DLL Then start from tail and go up 7, then print until tail.
   std::ofstream myfile;
   myfile.open ("output.txt", std::ios_base::app);
   listLineNode* ptr = m_head;
@@ -291,7 +396,10 @@ int main()
     test[i] = '$';
   }
 
-  addstr( "lightningTab> " );
+  //addstr( "lightningTab> " );
+  printtitle();
+
+
   getnstr(test, sizeof( test ) -1);
   while(true){
   clear();
