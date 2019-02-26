@@ -18,9 +18,7 @@ RIGHT NOW: the output is appended to the file, but the output is the full tab ev
 this will be a tricky problem when you are working with saving. I think the idea of reading in the file is that it will create the whole Linked List
 structure out of what is read in. THE OVERALL GOAL IS FOR THE FILE TO MATCH EXACTLY WHAT IS ON THE SCREEN OF THE LAST SESSION.
 
-Implement Double Digit Tabs 
-
-WORKING ON:Implement Chords
+WORKING ON: Implement Double Digit Tabs 
 
 Implement DLL for printing last 7 (or fewer) tablines (fixes spacing issues);
 
@@ -72,7 +70,7 @@ class List{
   public:
     List();
     ~List();
-    void insert(char c);
+    void insert(char c, int dd);
     void insertEnd();
     void print();
   private:
@@ -88,13 +86,23 @@ class List{
 
 List::List(){
   m_head = NULL;
-  this->insert('|');
+  this->insert('|', 1);
 }
 
-void List::insert(char c)
+void List::insert(char c, int dd)
 {                       
   Node *ptr =m_head;
-  Node *lineSeperator=new Node('-', NULL);
+//  Node *lineSeperator = NULL;
+  Node *lineSeperator;
+  if(dd == 1)
+    lineSeperator=new Node('-', NULL);
+  else
+    lineSeperator=NULL;
+  /*
+  if(dd != 2){
+    lineSeperator=new Node('-', NULL);
+  }
+  */
   if(m_head==NULL){
     m_head = new Node(c, lineSeperator);
     //printw("%s\n", &(m_head->m_c));
@@ -193,55 +201,116 @@ void listLine::insert(char string[100]){
   }
   */
   for(int i=0;i<100;i++){
+    int dd = 1;
     if(string[i] == '$')
       break;
     if(string[i] == 'e' && isdigit(string[i+1])){
-      eString.insert(string[i+1]);
-      aString.insert('-');
-      dString.insert('-');
-      gString.insert('-');
-      bString.insert('-');
-      EString.insert('-');
+      if(isdigit(string[i+2]))
+	dd = 2;
+      eString.insert(string[i+1], dd);
+      aString.insert('-', dd);
+      dString.insert('-', dd);
+      gString.insert('-', dd);
+      bString.insert('-', dd);
+      EString.insert('-', dd);
+      if(dd == 2){
+        eString.insert(string[i+2], 1);
+        aString.insert('-', 1);
+        dString.insert('-', 1);
+        gString.insert('-', 1);
+        bString.insert('-', 1);
+        EString.insert('-', 1);
+      }
     }
     if(string[i] == 'a' && isdigit(string[i+1])){
-      aString.insert(string[i+1]);
-      eString.insert('-');
-      dString.insert('-');
-      gString.insert('-');
-      bString.insert('-');
-      EString.insert('-');
+      if(isdigit(string[i+2]))
+	dd = 2;
+      aString.insert(string[i+1], dd);
+      eString.insert('-', dd);
+      dString.insert('-', dd);
+      gString.insert('-', dd);
+      bString.insert('-', dd);
+      EString.insert('-', dd);
+      if(dd == 2){
+        aString.insert(string[i+2], 1);
+        eString.insert('-', 1);
+        dString.insert('-', 1);
+        gString.insert('-', 1);
+        bString.insert('-', 1);
+        EString.insert('-', 1);
+      }
     }
     if(string[i] == 'd' && isdigit(string[i+1])){
-      dString.insert(string[i+1]);
-      eString.insert('-');
-      aString.insert('-');
-      gString.insert('-');
-      bString.insert('-');
-      EString.insert('-');
+      if(isdigit(string[i+2]))
+	dd = 2;
+      dString.insert(string[i+1], dd);
+      eString.insert('-', dd);
+      aString.insert('-', dd);
+      gString.insert('-', dd);
+      bString.insert('-', dd);
+      EString.insert('-', dd);
+      if(dd == 2){
+        dString.insert(string[i+2], 1);
+        eString.insert('-', 1);
+        aString.insert('-', 1);
+        gString.insert('-', 1);
+        bString.insert('-', 1);
+        EString.insert('-', 1);
+      }
     }
     if(string[i] == 'g' && isdigit(string[i+1])){
-      gString.insert(string[i+1]);
-      eString.insert('-');
-      aString.insert('-');
-      dString.insert('-');
-      bString.insert('-');
-      EString.insert('-');
+      if(isdigit(string[i+2]))
+	dd = 2;
+      gString.insert(string[i+1], dd);
+      eString.insert('-', dd);
+      aString.insert('-', dd);
+      dString.insert('-', dd);
+      bString.insert('-', dd);
+      EString.insert('-', dd);
+      if(dd == 2){
+        gString.insert(string[i+2], 1);
+        eString.insert('-', 1);
+        aString.insert('-', 1);
+        dString.insert('-', 1);
+        bString.insert('-', 1);
+        EString.insert('-', 1);
+      }
     }
     if(string[i] == 'b' && isdigit(string[i+1])){
-      bString.insert(string[i+1]);
-      eString.insert('-');
-      aString.insert('-');
-      dString.insert('-');
-      gString.insert('-');
-      EString.insert('-');
+      if(isdigit(string[i+2]))
+	dd = 2;
+      bString.insert(string[i+1], dd);
+      eString.insert('-' , dd);
+      aString.insert('-', dd);
+      dString.insert('-', dd);
+      gString.insert('-', dd);
+      EString.insert('-', dd);
+      if(dd == 2){
+        bString.insert(string[i+2], 1);
+        eString.insert('-', 1);
+        aString.insert('-', 1);
+        dString.insert('-', 1);
+        gString.insert('-', 1);
+        EString.insert('-', 1);
+      }
     }
     if(string[i] == 'E' && isdigit(string[i+1])){
-      EString.insert(string[i+1]);
-      eString.insert('-');
-      aString.insert('-');
-      dString.insert('-');
-      gString.insert('-');
-      bString.insert('-');
+      if(isdigit(string[i+2]))
+	dd = 2;
+      EString.insert(string[i+1], dd);
+      eString.insert('-', dd);
+      aString.insert('-', dd);
+      dString.insert('-', dd);
+      gString.insert('-', dd);
+      bString.insert('-', dd);
+      if(dd == 2){
+        EString.insert(string[i+2], 1);
+        eString.insert('-', 1);
+        aString.insert('-', 1);
+        dString.insert('-', 1);
+        gString.insert('-', 1);
+        bString.insert('-', 1);
+      }
     }
     if(string[i] == 'X'){
       EString.insertEnd();
@@ -277,47 +346,84 @@ void listLine::insertChord(char chord[22]){
   int g = 0;
   int b = 0;
   int E = 0;
+
+  int doubleDigit = 0;
   //printw("%s: ", chord);
   for(int i=0;i<22;i++){
+    int dd = 1;
     if(chord[i] == '$')
       break;
     if(chord[i] == 'e' && isdigit(chord[i+1]) && e == 0){
-      eString.insert(chord[i+1]);
+      if(isdigit(chord[i+2]))
+	dd = 2;
+      eString.insert(chord[i+1], dd);
+      if(dd == 2)
+	eString.insert(chord[i+2], dd);
       e = 1;
     }
     if(chord[i] == 'a' && isdigit(chord[i+1]) && a == 0){
-      aString.insert(chord[i+1]);
+      if(isdigit(chord[i+2]))
+	dd = 2;
+      aString.insert(chord[i+1], dd);
+      if(dd == 2)
+	aString.insert(chord[i+2], dd);
       a = 1;
     }
     if(chord[i] == 'd' && isdigit(chord[i+1]) && d == 0){
-      dString.insert(chord[i+1]);
+      if(isdigit(chord[i+2]))
+	dd = 2;
+      dString.insert(chord[i+1], dd);
+      if(dd == 2)
+	dString.insert(chord[i+2], dd);
       d = 1;
     }
     if(chord[i] == 'g' && isdigit(chord[i+1]) && g == 0){
-      gString.insert(chord[i+1]);
+      if(isdigit(chord[i+2]))
+	dd = 2;
+      gString.insert(chord[i+1], dd);
+      if(dd == 2)
+	gString.insert(chord[i+2], dd);
       g = 1;
     }
     if(chord[i] == 'b' && isdigit(chord[i+1]) && b == 0){
-      bString.insert(chord[i+1]);
+      if(isdigit(chord[i+2]))
+	dd = 2;
+      bString.insert(chord[i+1], dd);
+      if(dd == 2)
+	bString.insert(chord[i+2], dd);
       b = 1;
     }
     if(chord[i] == 'E' && isdigit(chord[i+1]) && E == 0){
-      EString.insert(chord[i+1]);
+      if(isdigit(chord[i+2]))
+	dd = 2;
+      EString.insert(chord[i+1], dd);
+      if(dd == 2)
+	EString.insert(chord[i+2], dd);
       E = 1;
     }
+    if(dd == 2)
+      doubleDigit = 1;
   }
   if(e == 0)
-    eString.insert('-');
+    eString.insert('-', 1);
   if(a == 0)
-    aString.insert('-');
+    aString.insert('-', 1);
   if(d == 0)
-    dString.insert('-');
+    dString.insert('-', 1);
   if(g == 0)
-    gString.insert('-');
+    gString.insert('-', 1);
   if(b == 0)
-    bString.insert('-');
+    bString.insert('-', 1);
   if(E == 0)
-    EString.insert('-');
+    EString.insert('-', 1);
+  if(doubleDigit){
+    eString.insert('-', 1);
+    aString.insert('-', 1);
+    dString.insert('-', 1);
+    gString.insert('-', 1);
+    bString.insert('-', 1);
+    EString.insert('-', 1);
+  }
 }
 
 void listLine::print(){
