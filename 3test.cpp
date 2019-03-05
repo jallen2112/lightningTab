@@ -4,9 +4,9 @@
 #include<cstring>
 #include<string>
 #include<fstream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<ctype.h>
 
 
 //Linked list structure allows for fully dynamic capability
@@ -14,11 +14,9 @@
 //easily edit tabs and tablines
 
 /* Goal Queue
-RIGHT NOW: the output is appended to the file, but the output is the full tab everytime so you need to clear the file everytime(??) 
-this will be a tricky problem when you are working with saving. I think the idea of reading in the file is that it will create the whole Linked List
-structure out of what is read in. THE OVERALL GOAL IS FOR THE FILE TO MATCH EXACTLY WHAT IS ON THE SCREEN OF THE LAST SESSION.
+RIGHT NOW: File output works properly but something done broke the double digit tabs. 
+This is likely in insert.
 
-WORKING ON: Implement Double Digit Tabs 
 
 Implement DLL for printing last 7 (or fewer) tablines (fixes spacing issues);
 
@@ -26,7 +24,7 @@ Implement Enter/Backspace for adding empty spaces and deleting columns respectiv
 
 Implement Arrow keys to move the view of the 7 tablines (assuming there are more than 7)
 
-Implement File output
+WORKING ON: Implement File output
 
 Implement editing system for lines
 
@@ -71,7 +69,7 @@ class List{
     List();
     ~List();
     void insert(char c, int dd);
-    void insertEnd();
+    void insertEnd(bool b);
     void print();
   private:
     class Node{
@@ -89,34 +87,58 @@ List::List(){
   this->insert('|', 1);
 }
 
+/*
 void List::insert(char c, int dd)
 {                       
   Node *ptr =m_head;
 //  Node *lineSeperator = NULL;
   Node *lineSeperator;
+  Node *lineBreaker= new Node('\n', NULL);
   if(dd == 1)
     lineSeperator=new Node('-', NULL);
   else
     lineSeperator=NULL;
-  /*
-  if(dd != 2){
-    lineSeperator=new Node('-', NULL);
-  }
-  */
   if(m_head==NULL){
     m_head = new Node(c, lineSeperator);
     //printw("%s\n", &(m_head->m_c));
   }
   else{
-    while(ptr->m_next != NULL){
+    while(ptr->m_next != NULL && ptr->m_next->m_c != '\n'){
       ptr = ptr->m_next;
     }
     ptr->m_next = new Node(c, lineSeperator);
     //printw("%s\n", &(ptr->m_next->m_c));
   }
-//  printw( "XXX: %c\n", ptr->m_c );
+}
+*/
+
+void List::insert(char c, int dd){
+  Node *ptr =m_head;
+//  Node *lineSeperator = NULL;
+  Node *lineSeperator;
+  Node *lineBreaker= new Node('\n', NULL);
+  if(dd == 1)
+    lineSeperator=new Node('-', lineBreaker);
+  else
+    lineSeperator=lineBreaker;
+  if(m_head==NULL){
+    m_head = new Node(c, lineSeperator);
+    //printw("%s\n", &(m_head->m_c));
+  }
+  else{
+    while(ptr->m_next != NULL && ptr->m_c != '\n'){
+      ptr = ptr->m_next;
+    }
+    ptr->m_c = c;
+    if(dd == 1)
+      ptr->m_next = new Node('-', lineSeperator);
+    else
+      ptr->m_next = new Node('\n', NULL);
+    //printw("%s\n", &(ptr->m_next->m_c));
+  }
 }
 
+/*
 void List::insertEnd()
 {                       
   Node *ptr =m_head;
@@ -129,6 +151,29 @@ void List::insertEnd()
       ptr = ptr->m_next;
     }
     ptr->m_next = new Node('|', NULL);
+    //printw("%s\n", &(ptr->m_next->m_c));
+  }
+//  printw( "XXX: %c\n", ptr->m_c );
+}
+*/
+
+void List::insertEnd(bool b)
+{                       
+  Node *endList = new Node('\n', NULL);
+  Node *ptr =m_head;
+  if(m_head==NULL){
+    m_head = new Node('|', NULL);
+    //printw("%s\n", &(m_head->m_c));
+  }
+  else{
+    while(ptr->m_c != '\n'){
+      ptr = ptr->m_next;
+    }
+    ptr->m_c = '|';
+    if(b == true)
+      ptr->m_next = new Node('\n', endList);
+    else
+      ptr->m_next = new Node('\n', NULL);
     //printw("%s\n", &(ptr->m_next->m_c));
   }
 //  printw( "XXX: %c\n", ptr->m_c );
@@ -150,6 +195,8 @@ List::~List()
 void List::print()
 {
   std::ofstream myfile;
+//  myfile.open("output.txt", std::ofstream::out | std::ios::trunc);
+//  myfile.close();
   myfile.open ("output.txt", std::ios_base::app);
   Node *ptr = m_head;
   while(ptr!=NULL)
@@ -159,8 +206,8 @@ void List::print()
     myfile << str;
     ptr =ptr->m_next;
   }
-  printw( "\n");
-  myfile << "\n";
+//  printw( "\n");
+  //myfile << "\n";
   myfile.close();
   //delete ptr;
 }
@@ -313,12 +360,12 @@ void listLine::insert(char string[100]){
       }
     }
     if(string[i] == 'X'){
-      EString.insertEnd();
-      eString.insertEnd();
-      aString.insertEnd();
-      dString.insertEnd();
-      gString.insertEnd();
-      bString.insertEnd();
+      EString.insertEnd(false);
+      eString.insertEnd(true);
+      aString.insertEnd(false);
+      dString.insertEnd(false);
+      gString.insertEnd(false);
+      bString.insertEnd(false);
       full = true;
     }
     if(string[i] == 'c' && string[i+1] == 'h'){
@@ -481,14 +528,18 @@ void megaList::print(){
   //Need to edit this to only print the last 7 tblines, maybe doubly linked list?
   //If you use DLL Then start from tail and go up 7, then print until tail.
   std::ofstream myfile;
+//  myfile.open("output.txt", std::ofstream::out | std::ios::trunc);
+//  myfile.close();
+  //remove( "output.txt" );
   myfile.open ("output.txt", std::ios_base::app);
   listLineNode* ptr = m_head;
   while(ptr!=NULL){
     ptr->m_lLine->print();
-    printw("\n");
-    myfile << "\n";
+//    printw("\n");
+    //myfile << "\n";
     ptr = ptr->m_next;
   }
+  //myfile << "\n";
   myfile.close();
 }
 
@@ -511,6 +562,7 @@ int main()
   clear();
   refresh();
   meg.insert(test);
+  remove( "output.txt" );
   meg.print();
   
   refresh();
