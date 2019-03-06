@@ -1,2 +1,2 @@
-tab: 3test.cpp
-	g++ -lcurses 3test.cpp -o tab 
+tab: main.cpp
+	g++ -lcurses main.cpp -o tab 
