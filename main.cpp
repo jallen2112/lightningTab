@@ -10,6 +10,8 @@
 #include<ctype.h>
 
 bool thisFile = false;
+bool Dash = false;
+bool addDash = false;
 //Linked list structure allows for fully dynamic capability
 //You can insert & delete between individual tabs as well as tablines, and also
 //easily edit tabs and tablines
@@ -138,7 +140,7 @@ void List::insert(char c, int dd){
       ptr = ptr->m_next;
     }
     ptr->m_c = c;
-    if(dd == 1)
+    if(dd == 1 && !addDash)
       ptr->m_next = new Node('-', lineBreaker);
     else
       ptr->m_next = new Node('\n', NULL);
@@ -257,6 +259,23 @@ bool listLine::isFull(){
 
 void listLine::insert(char string[100]){
   char which;
+//  std::cout << "MYSTRING: " << string << std::endl;
+  if (string[0] == '\0' && Dash == true)
+  {
+ //   std::cout << "EMPTY: " << string << std::endl;
+      addDash = true;
+      eString.insert('-', 1);
+      aString.insert('-', 1);
+      dString.insert('-', 1);
+      gString.insert('-', 1);
+      bString.insert('-', 1);
+      EString.insert('-', 1);
+      addDash = false;
+
+    // your code here
+  }
+
+//  sleep(2);
   for(int i=0;i<100;i++){
     int dd = 1;
     if(string[i] == '$')
@@ -650,6 +669,7 @@ int main()
     test[i] = '$';
   }
   getnstr(test, sizeof( test ) -1);
+  Dash = true;
   }
   endwin();
   return 0;
