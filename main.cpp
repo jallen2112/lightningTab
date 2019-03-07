@@ -18,6 +18,8 @@ bool addDash = false;
 
 /* Goal Queue
 
+RIGHT NOW: Everytime you load the from the file it's flipped.
+
 Implement DLL for printing last 7 (or fewer) tablines (fixes spacing issues);
 
 Implement Enter/Backspace for adding empty spaces and deleting columns respectively.
@@ -220,22 +222,22 @@ void listLine::insertLine(char string[100], int gS){
   //sleep(2);
   switch(gS){
     case 1:
-      eString.insertLine(string);
+      EString.insertLine(string);
       break;
     case 2:
-      aString.insertLine(string);
-      break;
-    case 3:
-      dString.insertLine(string);
-      break;
-    case 4:
-      gString.insertLine(string);
-      break;
-    case 5:
       bString.insertLine(string);
       break;
+    case 3:
+      gString.insertLine(string);
+      break;
+    case 4:
+      dString.insertLine(string);
+      break;
+    case 5:
+      aString.insertLine(string);
+      break;
     case 6:
-      EString.insertLine(string);
+      eString.insertLine(string);
       break;
     case 7:
       /*
