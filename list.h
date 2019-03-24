@@ -15,6 +15,7 @@
 extern bool thisFile;
 extern bool Dash;
 extern bool addDash;
+extern char vi;
 
 
 class List{

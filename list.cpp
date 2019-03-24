@@ -138,6 +138,8 @@ bool listLine::isFull(){
 
 void listLine::insert(char string[100]){
   char which;
+  if(string[0] == 'v')
+    vi = 'c';
   if (string[0] == '\0' && Dash == true)
   {
       addDash = true;

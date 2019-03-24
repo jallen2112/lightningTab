@@ -1,4 +1,7 @@
 #include "list.h"
+#include <unistd.h>
+char vi  = 'c';
+
 
 //Linked list structure allows for fully dynamic capability
 //You can insert & delete between individual tabs as well as tablines, and also
@@ -60,6 +63,7 @@ int main()
   for(int i=0;i<100;i++){
     test[i] = '$';
   }
+  keypad(stdscr, TRUE);
 
   //addstr( "lightningTab> " );
   printtitle();
@@ -74,11 +78,24 @@ int main()
   meg.print();
   
   refresh();
-  addstr( "lightningTab> " );
+  if(vi == 'i')
+    addstr( "lightningTab[I]> " );
+  else
+    addstr( "lightningTab[V]> " );
   for(int i=0;i<100;i++){
     test[i] = '$';
   }
-  getnstr(test, sizeof( test ) -1);
+  switch(vi){
+    case 'i':
+      getnstr(test, sizeof( test ) -1);
+      break;
+    case 'c':
+      int input = getch();
+      if(input == 'i')
+	vi = 'i';
+      if(input  == 'd')
+       sleep(1);
+  }
   Dash = true;
   }
   endwin();
