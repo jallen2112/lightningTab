@@ -25,7 +25,7 @@ class List{
     void insert(char c, int dd);
     void insertEnd(bool b);
     void insertLine(char string[100]);
-    void print();
+    void print(bool inV);
     void insertF(char c);
   private:
     class Node{
@@ -40,14 +40,17 @@ class List{
 
 class listLine{
   public:
-    listLine(){full = false;}
+    listLine(){full = false;inView = false;}
     void insert(char string[100]);
     void insertChord(char chord[22]);
     void print();
     bool isFull();
     void insertLine(char string[100], int gS);
+    void addToView();
+    void removeFromView();
   private:
     bool full;
+    bool inView;
     List EString;
     List bString;
     List gString;
@@ -58,13 +61,16 @@ class listLine{
 
 class megaList{
   public:
-    megaList(){m_head = NULL;cS=1;}
+    megaList(){m_head=NULL;m_tail=NULL;cS=1;numInView=0;view_head=NULL;view_tail=NULL;}
     ~megaList();
     void insert(char string[100], bool file);
     void print();
     void fileInsert();
     int curString();
     void incCurString();
+    void shiftDown();
+    void shiftUp();
+    void viewCount();
   private:
     class listLineNode{
       public:
@@ -72,10 +78,15 @@ class megaList{
         {m_lLine = lLine; m_next = next;}
         listLine *m_lLine;
         listLineNode *m_next;
+	listLineNode *m_prev;
 
     };
     listLineNode *m_head;
+    listLineNode *m_tail;
+    listLineNode *view_head;
+    listLineNode *view_tail;
     int cS;
+    int numInView;
 };
 
 #endif

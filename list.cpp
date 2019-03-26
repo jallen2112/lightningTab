@@ -90,14 +90,15 @@ List::~List()
   }
 }
 
-void List::print()
+void List::print(bool inV)
 {
   std::ofstream myfile;
   myfile.open ("output.txt", std::ios_base::app);
   Node *ptr = m_head;
   while(ptr!=NULL)
   {
-    printw( "%s", &(ptr->m_c) );
+    if(inV)
+      printw( "%s", &(ptr->m_c) );
     std::string str(&(ptr->m_c));
     myfile << str;
     ptr =ptr->m_next;
@@ -378,12 +379,30 @@ void listLine::insertChord(char chord[22]){
 }
 
 void listLine::print(){
-  EString.print();
-  bString.print();
-  gString.print();
-  dString.print();
-  aString.print();
-  eString.print();
+  if(inView){
+    EString.print(1);
+    bString.print(1);
+    gString.print(1);
+    dString.print(1);
+    aString.print(1);
+    eString.print(1);
+  }
+  else{
+    EString.print(0);
+    bString.print(0);
+    gString.print(0);
+    dString.print(0);
+    aString.print(0);
+    eString.print(0);
+  }
+}
+
+void listLine::addToView(){
+  inView = true;
+}
+
+void listLine::removeFromView(){
+  inView = false;
 }
 
 megaList::~megaList() 
@@ -419,12 +438,20 @@ void megaList::insert(char string[100], bool file){
   if(file){
     //Call a listline function. Give as parameter the string that it's supposed to insert into (from megaList variable), and the string 
     //it will insert on that line
+    //This is the difference between reading from a file and inserting from the program
     ll->insertLine(string, curString());
   }
   else
     ll->insert(string);
-  if(m_head == NULL)
+  if(m_head == NULL && m_tail == NULL){
+    ll->addToView();
+    viewCount();
     m_head = new listLineNode(ll, NULL);
+    view_head = m_head;
+    m_head->m_next = NULL;
+    m_head->m_prev = NULL;
+    m_tail = m_head;
+  }
   else{
     listLineNode *ptr = m_head;
     while(ptr->m_next != NULL && ptr->m_lLine->isFull() == true){
@@ -439,6 +466,13 @@ void megaList::insert(char string[100], bool file){
     }
     else{
       ptr->m_next  = new listLineNode(ll, NULL);
+      if(numInView < 7){
+        ll->addToView();
+        viewCount();
+	view_tail = ptr->m_next;
+      }
+      m_tail = ptr->m_next;
+      m_tail->m_prev = ptr;
     }
   }
   if(thisFile)
@@ -448,14 +482,14 @@ void megaList::insert(char string[100], bool file){
 void megaList::print(){
   //Need to edit this to only print the last 7 tblines, maybe doubly linked list?
   //If you use DLL Then start from tail and go up 7, then print until tail.
-  std::ofstream myfile;
-  myfile.open ("output.txt", std::ios_base::app);
+//  std::ofstream myfile;
+//  myfile.open ("output.txt", std::ios_base::app);
   listLineNode* ptr = m_head;
   while(ptr!=NULL){
     ptr->m_lLine->print();
     ptr = ptr->m_next;
   }
-  myfile.close();
+//  myfile.close();
 }
 
 void megaList::fileInsert(){
@@ -487,3 +521,26 @@ void megaList::fileInsert(){
 
 }
 
+void megaList::viewCount(){
+  numInView++;
+}
+
+void megaList::shiftDown(){
+  if(view_tail->m_next != NULL){
+    view_tail = view_tail->m_next;
+    view_tail->m_lLine->addToView();
+    view_head->m_lLine->removeFromView();
+    view_head = view_head->m_next;
+  }
+  //sleep(1);
+}
+
+void megaList::shiftUp(){
+  if(view_head->m_prev!=NULL){
+    view_head = view_head->m_prev;
+    view_head->m_lLine->addToView();
+    view_tail->m_lLine->removeFromView();
+    view_tail = view_tail->m_prev;
+  }
+//  sleep(1);
+}

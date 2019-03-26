@@ -1,5 +1,4 @@
 #include "list.h"
-#include <unistd.h>
 char vi  = 'c';
 
 
@@ -93,8 +92,13 @@ int main()
       int input = getch();
       if(input == 'i')
 	vi = 'i';
-      if(input  == 'd')
-       sleep(1);
+      if(input == 'd')
+	sleep(1);
+      if(input == 'j')
+	meg.shiftDown();
+      if(input == 'k')
+	meg.shiftUp();
+      break;
   }
   Dash = true;
   }
