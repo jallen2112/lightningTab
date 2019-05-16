@@ -574,3 +574,15 @@ void megaList::shiftUp(){
   }
 //  sleep(1);
 }
+
+void megaList::snapToBottom(){
+  while(view_tail->m_next != NULL){
+    shiftDown();
+  }
+}
+
+void megaList::snapToTop(){
+  while(view_head->m_prev != NULL){
+    shiftUp();
+  }
+}

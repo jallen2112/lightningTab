@@ -87,6 +87,7 @@ int main()
   switch(vi){
     case 'i':
       getnstr(test, sizeof( test ) -1);
+      meg.snapToBottom();
       break;
     case 'c':
       int input = getch();
@@ -98,6 +99,10 @@ int main()
 	meg.shiftDown();
       if(input == 'k')
 	meg.shiftUp();
+      if(input == 'b')
+	meg.snapToBottom();
+      if(input == 't')
+	meg.snapToTop();
       break;
   }
   Dash = true;

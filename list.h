@@ -74,6 +74,8 @@ class megaList{
     void shiftUp();
     void viewCount();
     void deleteSingle();
+    void snapToBottom();
+    void snapToTop();
   private:
     class listLineNode{
       public:
