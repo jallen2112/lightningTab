@@ -27,6 +27,7 @@ class List{
     void insertLine(char string[100]);
     void print(bool inV);
     void insertF(char c);
+    void deleteSingle();
   private:
     class Node{
       public:
@@ -48,6 +49,7 @@ class listLine{
     void insertLine(char string[100], int gS);
     void addToView();
     void removeFromView();
+    void deleteSingle();
   private:
     bool full;
     bool inView;
@@ -71,6 +73,7 @@ class megaList{
     void shiftDown();
     void shiftUp();
     void viewCount();
+    void deleteSingle();
   private:
     class listLineNode{
       public:

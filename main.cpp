@@ -93,7 +93,7 @@ int main()
       if(input == 'i')
 	vi = 'i';
       if(input == 'd')
-	sleep(1);
+	meg.deleteSingle();
       if(input == 'j')
 	meg.shiftDown();
       if(input == 'k')

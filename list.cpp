@@ -525,6 +525,36 @@ void megaList::viewCount(){
   numInView++;
 }
 
+void megaList::deleteSingle(){
+  m_tail->m_lLine->deleteSingle();
+}
+
+void listLine::deleteSingle(){
+  EString.deleteSingle();
+  bString.deleteSingle();
+  gString.deleteSingle();
+  dString.deleteSingle();
+  aString.deleteSingle();
+  eString.deleteSingle();
+}
+
+void List::deleteSingle(){
+  Node* ptr = m_head;
+  Node* ptr2 = m_head;
+  int count = 0;
+  while(ptr->m_next!=NULL){
+    ptr = ptr->m_next;
+    if(count > 1)
+      ptr2=ptr2->m_next;
+    count++;
+  }
+  if(count > 2){
+    ptr2->m_next = NULL;
+    delete(ptr);
+    insertF('\n');
+  }
+}
+
 void megaList::shiftDown(){
   if(view_tail->m_next != NULL){
     view_tail = view_tail->m_next;
